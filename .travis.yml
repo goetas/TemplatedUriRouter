@@ -10,3 +10,6 @@ before_script:
 
 script:
   - phpunit -c phpunit.unit.xml.dist --coverage-text
+
+notifications:
+    email: false
