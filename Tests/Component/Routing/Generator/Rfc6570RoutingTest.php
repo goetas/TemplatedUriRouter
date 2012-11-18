@@ -65,7 +65,7 @@ class Rfc6570RoutingTest extends \PHPUnit_Framework_TestCase
 
         $router = new Router($sc, 'foo',
             array(
-                'generator_class' => 'Hautelook\\ApiBundle\\Component\\Routing\\Generator\\Rfc6570Generator',
+                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Component\\Routing\\Generator\\Rfc6570Generator',
             )
         );
         $generatedRoute = $router->generate('foo', array('foo' => 'foobar', 'bar' => array()));
