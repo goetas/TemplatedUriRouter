@@ -13,6 +13,7 @@
     },
     "require-dev": {
         "symfony/routing": "2.1.*",
+        "symfony/http-kernel": "2.1.*",
         "symfony/framework-bundle": "2.1.*"
     },
     "autoload": {
