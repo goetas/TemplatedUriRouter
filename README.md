@@ -8,7 +8,7 @@ and incomplete. However, it does what we need it to do. Contributions are welcom
 
 ## Installation
 
-Simply run assuming you have installed composer.phar or composer binary (or add to your `composer.json` and run composer install:
+Simply run the following command (assuming you have installed composer.phar or composer binary), or add to your `composer.json` and run composer install:
 
 ```bash
 $ composer require hautelook/templated-uri-bundle
@@ -24,7 +24,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new Hautelook\TemplatedUriBundle(),
+        new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
         // ...
     );
 }
@@ -52,3 +52,4 @@ This will produce a link similar to:
 ```
 
 [RFC-6570]: https://tools.ietf.org/html/rfc6570
+
