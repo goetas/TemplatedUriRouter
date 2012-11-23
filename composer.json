@@ -13,9 +13,9 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "symfony/routing": "2.*",
-        "symfony/http-kernel": "2.*",
-        "symfony/framework-bundle": "2.*"
+        "symfony/routing": ">=2.1.0, <= 2.2.99",
+        "symfony/http-kernel": ">=2.1.0, <= 2.2.99",
+        "symfony/framework-bundle": ">=2.1.0, <= 2.2.99"
     },
     "require-dev": {},
     "autoload": {
