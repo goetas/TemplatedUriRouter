@@ -13,15 +13,11 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "symfony/routing": ">=2.1.0, <= 2.3.0",
-        "symfony/http-kernel": ">=2.1.0, <= 2.3.0",
-        "symfony/framework-bundle": ">=2.1.0, <= 2.3.0"
+        "symfony/routing": ">=2.1, <2.3-dev",
+        "symfony/http-kernel": ">=2.1, <2.3-dev",
+        "symfony/framework-bundle": ">=2.1, <2.3-dev"
     },
-    "require-dev": {
-        "symfony/routing": "2.1.*",
-        "symfony/http-kernel": "2.1.*",
-        "symfony/framework-bundle": "2.1.*"
-    },
+    "require-dev": {},
     "autoload": {
         "psr-0": { "Hautelook\\TemplatedUriBundle": "" }
     },
