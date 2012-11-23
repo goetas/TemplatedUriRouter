@@ -1,6 +1,6 @@
 {
     "name": "hautelook/templated-uri-bundle",
-    "description": "Symfony2 Bundle that provides a RFC-6570 compatible router and URL Generator."
+    "description": "Symfony2 Bundle that provides a RFC-6570 compatible router and URL Generator.",
     "keywords": ["Symfony2", "URI", "URL", "RFC 6570", "JSON", "XML", "Hateoas"],
     "type": "symfony-bundle",
     "license": "MIT",
