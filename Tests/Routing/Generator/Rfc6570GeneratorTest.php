@@ -20,7 +20,10 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSimplePlaceholder()
+    /**
+     * @dataProvider getTestPlaceholderData
+     */
+    public function testPlaceholder($expected, $parameters)
     {
         $routes = new RouteCollection();
 
@@ -33,67 +36,39 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
             )
         ));
 
-        $sc = $this->getServiceContainer($routes);
+        $container = $this->getServiceContainer($routes);
 
-        $router = new Router($sc, 'foo',
-            array(
-                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Routing\\Generator\\Rfc6570Generator',
-            )
-        );
-        $generatedRoute = $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar'));
+        $router = new Router($container, 'foo', array(
+            'generator_class' => 'Hautelook\\TemplatedUriBundle\\Routing\\Generator\\Rfc6570Generator',
+        ));
 
-        $this->assertEquals(
-            "/foo/foobar/?{&bar}",
-            $generatedRoute
-        );
+        $this->assertEquals($expected, $router->generate('foo', $parameters));
     }
 
-    public function testArrayPlaceholder()
+    public function getTestPlaceholderData()
     {
-        $routes = new RouteCollection();
-
-        $routes->add('foo', new Route(
-            '/foo/{foo}/',
-            array(
-                'foo'    => '123',
-            ),
-            array(
-            )
-        ));
-
-        $sc = $this->getServiceContainer($routes);
-
-        $router = new Router($sc, 'foo',
-            array(
-                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Routing\\Generator\\Rfc6570Generator',
-            )
-        );
-        $generatedRoute = $router->generate('foo', array('foo' => 'foobar', 'bar' => array()));
-
-        $this->assertEquals(
-            "/foo/foobar/?{&bar%5B%5D*}",
-            $generatedRoute
+        return array(
+            array('/foo/foobar/?{&bar}', array('foo' => 'foobar', 'bar' => 'barbar')),
+            array('/foo/foobar/?{&bar%5B%5D*}', array('foo' => 'foobar', 'bar' => array())),
         );
     }
 
     private function getServiceContainer(RouteCollection $routes)
     {
-        $loader = $this->getMock('Symfony\Component\Config\Loader\LoaderInterface');
-
-        $loader
+        $loader = $this
+            ->getMock('Symfony\Component\Config\Loader\LoaderInterface')
             ->expects($this->any())
             ->method('load')
             ->will($this->returnValue($routes))
         ;
 
-        $sc = $this->getMock('Symfony\\Component\\DependencyInjection\\ContainerInterface');
-
-        $sc
+        $container = $this
+            ->getMock('Symfony\\Component\\DependencyInjection\\ContainerInterface')
             ->expects($this->once())
             ->method('get')
             ->will($this->returnValue($loader))
         ;
 
-        return $sc;
+        return $container;
     }
 }
