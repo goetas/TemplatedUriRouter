@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Bundle\FrameworkBundle\Tests\Routing;
+namespace Hautelook\TemplatedUriBundle\Tests\Routing\Generator;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Route;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\RouteCollection;
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
  */
-class Rfc6570RoutingTest extends \PHPUnit_Framework_TestCase
+class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimplePlaceholder()
     {
@@ -37,7 +37,7 @@ class Rfc6570RoutingTest extends \PHPUnit_Framework_TestCase
 
         $router = new Router($sc, 'foo',
             array(
-                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Component\\Routing\\Generator\\Rfc6570Generator',
+                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Routing\\Generator\\Rfc6570Generator',
             )
         );
         $generatedRoute = $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar'));
@@ -65,7 +65,7 @@ class Rfc6570RoutingTest extends \PHPUnit_Framework_TestCase
 
         $router = new Router($sc, 'foo',
             array(
-                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Component\\Routing\\Generator\\Rfc6570Generator',
+                'generator_class' => 'Hautelook\\TemplatedUriBundle\\Routing\\Generator\\Rfc6570Generator',
             )
         );
         $generatedRoute = $router->generate('foo', array('foo' => 'foobar', 'bar' => array()));
