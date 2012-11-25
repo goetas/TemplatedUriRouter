@@ -55,16 +55,14 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
 
     private function getServiceContainer(RouteCollection $routes)
     {
-        $loader = $this
-            ->getMock('Symfony\Component\Config\Loader\LoaderInterface')
-            ->expects($this->any())
+        $loader = $this->getMock('Symfony\Component\Config\Loader\LoaderInterface');
+        $loader->expects($this->any())
             ->method('load')
             ->will($this->returnValue($routes))
         ;
 
-        $container = $this
-            ->getMock('Symfony\\Component\\DependencyInjection\\ContainerInterface')
-            ->expects($this->once())
+        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container->expects($this->once())
             ->method('get')
             ->will($this->returnValue($loader))
         ;
