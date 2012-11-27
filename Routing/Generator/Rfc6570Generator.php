@@ -107,7 +107,7 @@ class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, Co
             foreach ($extra as $key => $value) {
                 if (is_scalar($value)) {
                     $url .= '{&' . $key . '}';
-                } else if (is_array($value)) {
+                } elseif (is_array($value)) {
                     $url .= '{&' . $key . '%5B%5D*}';
                 }
             }
