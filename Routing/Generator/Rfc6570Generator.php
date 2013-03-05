@@ -34,50 +34,44 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
 class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInterface
 {
     /**
-     * @throws MissingMandatoryParametersException When route has some missing mandatory parameters
-     * @throws InvalidParameterException When a parameter value is not correct
+     * @throws MissingMandatoryParametersException When some parameters are missing that mandatory for the route
+     * @throws InvalidParameterException           When a parameter value for a placeholder is not correct because
+     *                                             it does not match the requirement
      */
-    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
+    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens)
     {
         $variables = array_flip($variables);
-
-        $originParameters = $parameters;
-        $parameters = array_replace($this->context->getParameters(), $parameters);
-        $tparams = array_replace($defaults, $parameters);
+        $mergedParams = array_replace($defaults, $this->context->getParameters(), $parameters);
 
         // all params must be given
-        if ($diff = array_diff_key($variables, $tparams)) {
-            throw new MissingMandatoryParametersException(sprintf('The "%s" route has some missing mandatory parameters ("%s").', $name, implode('", "', array_keys($diff))));
+        if ($diff = array_diff_key($variables, $mergedParams)) {
+            throw new MissingMandatoryParametersException(sprintf('Some mandatory parameters are missing ("%s") to generate a URL for route "%s".', implode('", "', array_keys($diff)), $name));
         }
 
         $url = '';
         $optional = true;
         foreach ($tokens as $token) {
             if ('variable' === $token[0]) {
-                if (false === $optional || !array_key_exists($token[3], $defaults) || (isset($parameters[$token[3]]) && (string) $parameters[$token[3]] != (string) $defaults[$token[3]])) {
-                    if (!$isEmpty = in_array($tparams[$token[3]], array(null, '', false), true)) {
-                        // check requirement
-                        if ($tparams[$token[3]] && !preg_match('#^'.$token[2].'$#', $tparams[$token[3]])) {
-                            $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given).', $token[3], $name, $token[2], $tparams[$token[3]]);
-                            if ($this->strictRequirements) {
-                                throw new InvalidParameterException($message);
-                            }
-
-                            if ($this->logger) {
-                                $this->logger->err($message);
-                            }
-
-                            return null;
+                if (!$optional || !array_key_exists($token[3], $defaults) || (string) $mergedParams[$token[3]] !== (string) $defaults[$token[3]]) {
+                    // check requirement
+                    if (null !== $this->strictRequirements && !preg_match('#^'.$token[2].'$#', $mergedParams[$token[3]])) {
+                        $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given) to generate a corresponding URL.', $token[3], $name, $token[2], $mergedParams[$token[3]]);
+                        if ($this->strictRequirements) {
+                            throw new InvalidParameterException($message);
                         }
+
+                        if ($this->logger) {
+                            $this->logger->error($message);
+                        }
+
+                        return null;
                     }
 
-                    if (!$isEmpty || !$optional) {
-                        $url = $token[1].$tparams[$token[3]].$url;
-                    }
-
+                    $url = $token[1].$mergedParams[$token[3]].$url;
                     $optional = false;
                 }
-            } elseif ('text' === $token[0]) {
+            } else {
+                // static text
                 $url = $token[1].$url;
                 $optional = false;
             }
@@ -87,8 +81,8 @@ class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, Co
             $url = '/';
         }
 
-        // do not encode the contexts base url as it is already encoded (see Symfony\Component\HttpFoundation\Request)
-        $url = $this->context->getBaseUrl().strtr(rawurlencode($url), $this->decodedChars);
+        // the contexts base url is already encoded (see Symfony\Component\HttpFoundation\Request)
+        $url = strtr(rawurlencode($url), $this->decodedChars);
 
         // the path segments "." and ".." are interpreted as relative reference when resolving a URI; see http://tools.ietf.org/html/rfc3986#section-3.3
         // so we need to encode them as they are not used for this purpose here
@@ -100,8 +94,67 @@ class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, Co
             $url = substr($url, 0, -1) . '%2E';
         }
 
+        $schemeAuthority = '';
+        if ($host = $this->context->getHost()) {
+            $scheme = $this->context->getScheme();
+            if (isset($requirements['_scheme']) && ($req = strtolower($requirements['_scheme'])) && $scheme !== $req) {
+                $referenceType = self::ABSOLUTE_URL;
+                $scheme = $req;
+            }
+
+            if ($hostTokens) {
+                $routeHost = '';
+                foreach ($hostTokens as $token) {
+                    if ('variable' === $token[0]) {
+                        if (null !== $this->strictRequirements && !preg_match('#^'.$token[2].'$#', $mergedParams[$token[3]])) {
+                            $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given) to generate a corresponding URL.', $token[3], $name, $token[2], $mergedParams[$token[3]]);
+
+                            if ($this->strictRequirements) {
+                                throw new InvalidParameterException($message);
+                            }
+
+                            if ($this->logger) {
+                                $this->logger->error($message);
+                            }
+
+                            return null;
+                        }
+
+                        $routeHost = $token[1].$mergedParams[$token[3]].$routeHost;
+                    } else {
+                        $routeHost = $token[1].$routeHost;
+                    }
+                }
+
+                if ($routeHost !== $host) {
+                    $host = $routeHost;
+                    if (self::ABSOLUTE_URL !== $referenceType) {
+                        $referenceType = self::NETWORK_PATH;
+                    }
+                }
+            }
+
+            if (self::ABSOLUTE_URL === $referenceType || self::NETWORK_PATH === $referenceType) {
+                $port = '';
+                if ('http' === $scheme && 80 != $this->context->getHttpPort()) {
+                    $port = ':'.$this->context->getHttpPort();
+                } elseif ('https' === $scheme && 443 != $this->context->getHttpsPort()) {
+                    $port = ':'.$this->context->getHttpsPort();
+                }
+
+                $schemeAuthority = self::NETWORK_PATH === $referenceType ? '//' : "$scheme://";
+                $schemeAuthority .= $host.$port;
+            }
+        }
+
+        if (self::RELATIVE_PATH === $referenceType) {
+            $url = self::getRelativePath($this->context->getPathInfo(), $url);
+        } else {
+            $url = $schemeAuthority.$this->context->getBaseUrl().$url;
+        }
+
         // add a query string if needed
-        $extra = array_diff_key($originParameters, $variables, $defaults);
+        $extra = array_diff_key($parameters, $variables, $defaults);
         if (is_array($extra) && !empty($extra)) {
             $url .= '?';
             foreach ($extra as $key => $value) {
@@ -110,25 +163,6 @@ class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, Co
                 } elseif (is_array($value)) {
                     $url .= '{&' . $key . '%5B%5D*}';
                 }
-            }
-        }
-
-        if ($this->context->getHost()) {
-            $scheme = $this->context->getScheme();
-            if (isset($requirements['_scheme']) && ($req = strtolower($requirements['_scheme'])) && $scheme != $req) {
-                $absolute = true;
-                $scheme = $req;
-            }
-
-            if ($absolute) {
-                $port = '';
-                if ('http' === $scheme && 80 != $this->context->getHttpPort()) {
-                    $port = ':'.$this->context->getHttpPort();
-                } elseif ('https' === $scheme && 443 != $this->context->getHttpsPort()) {
-                    $port = ':'.$this->context->getHttpsPort();
-                }
-
-                $url = $scheme.'://'.$this->context->getHost().$port.$url;
             }
         }
 
