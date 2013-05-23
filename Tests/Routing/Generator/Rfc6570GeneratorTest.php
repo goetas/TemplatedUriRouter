@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Hautelook\TemplatedUriBundle\Tests\Routing\Generator;
+namespace Hautelook\TemplatedUriRouter\Tests\Routing\Generator;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Route;
@@ -39,7 +39,7 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
         $container = $this->getServiceContainer($routes);
 
         $router = new Router($container, 'foo', array(
-            'generator_class' => 'Hautelook\\TemplatedUriBundle\\Routing\\Generator\\Rfc6570Generator',
+            'generator_class' => 'Hautelook\\TemplatedUriRouter\\Routing\\Generator\\Rfc6570Generator',
         ));
 
         $this->assertEquals($expected, $router->generate('foo', $parameters));
