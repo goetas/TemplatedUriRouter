@@ -9,7 +9,8 @@ However, it does what we need it to do. Contributions are welcome.
 
 ## Installation
 
-Simply run the following command (assuming you have installed composer.phar or composer binary), or add to your `composer.json` and run composer install:
+Run the following command (assuming you have composer.phar or composer binary installed), or
+require `hautelook/templated-uri-router` to your `composer.json` and run `composer install`:
 
 ```bash
 $ composer require "hautelook/templated-uri-router ~1.0"
@@ -17,16 +18,21 @@ $ composer require "hautelook/templated-uri-router ~1.0"
 
 ## Usage
 
+```yaml
+# routing.yml
+hautelook_demo_route:
+    pattern: /demo
+```
+
 ```php
 use Hautelook\TemplatedUriRouter\Routing\Generator\Rfc6570Generator as TemplateGenerator;
+
 $templateGenerator = new TemplateGenerator($routes, $context);
-$templateLink = $templateGenerator->generate('hautelook_demo_route',
-    array(
-        'page'   => '{page}',
-        'sort'   => array('{sort}'),
-        'filter' => array('{filter}'),
-    )
-);
+$templatedUri      = $templateGenerator->generate('hautelook_demo_route', array(
+    'page'   => '{page}',
+    'sort'   => array('{sort}'),
+    'filter' => array('{filter}'),
+));
 ```
 
 This will produce a link similar to:
@@ -37,7 +43,8 @@ This will produce a link similar to:
 
 ## Bundle
 
-The symfony2 bundle lives at [https://github.com/hautelook/TemplatedUriBundle](https://github.com/hautelook/TemplatedUriBundle);
+The symfony2 bundle lives at
+[https://github.com/hautelook/TemplatedUriBundle](https://github.com/hautelook/TemplatedUriBundle).
 
 [RFC-6570]: https://tools.ietf.org/html/rfc6570
 
