@@ -32,5 +32,10 @@
             "Hautelook\\TemplatedUriRouter": ""
         }
     },
-    "target-dir": "Hautelook/TemplatedUriRouter"
+    "target-dir": "Hautelook/TemplatedUriRouter",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
 }
