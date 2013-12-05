@@ -22,19 +22,20 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "symfony/routing": ">=2.1"
+        "symfony/routing": "~2.1"
     },
     "require-dev": {
-        "symfony/framework-bundle": ">=2.1"
+        "symfony/framework-bundle": "~2.1"
     },
     "autoload": {
         "psr-0": {
             "Hautelook\\TemplatedUriRouter": ""
         }
     },
-    "suggest": {
-        "hautelook/templated-uri-bundle": "Bundle that integrates the templated router"
-    },
     "target-dir": "Hautelook/TemplatedUriRouter",
-    "minimum-stability": "dev"
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
 }
