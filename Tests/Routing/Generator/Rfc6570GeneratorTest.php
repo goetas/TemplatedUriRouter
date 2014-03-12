@@ -54,6 +54,56 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @expectedException \Symfony\Component\Routing\Exception\InvalidParameterException
+     */
+    public function testStrictParameters()
+    {
+        $routes = new RouteCollection();
+
+        $routes->add('foo', new Route(
+            '/foo/{foo}/',
+            array(
+                'foo' => '123',
+            ),
+            array(
+                'foo' => '\d+',
+            )
+        ));
+
+        $container = $this->getServiceContainer($routes);
+
+        $router = new Router($container, 'foo', array(
+            'generator_class' => 'Hautelook\\TemplatedUriRouter\\Routing\\Generator\\Rfc6570Generator',
+        ));
+
+        $this->assertEquals('/foo/foobar/?{&bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
+    }
+
+    public function testLooseParameters()
+    {
+        $routes = new RouteCollection();
+
+        $routes->add('foo', new Route(
+            '/foo/{foo}/',
+            array(
+                'foo' => '123',
+            ),
+            array(
+                'foo' => '\d+',
+            )
+        ));
+
+        $container = $this->getServiceContainer($routes);
+
+        $router = new Router($container, 'foo', array(
+            'generator_class' => 'Hautelook\\TemplatedUriRouter\\Routing\\Generator\\Rfc6570Generator',
+            'strict_requirements' => null,
+        ));
+
+        $this->assertEquals('/foo/foobar/?{&bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
+    }
+
     private function getServiceContainer(RouteCollection $routes)
     {
         $loader = $this->getMock('Symfony\Component\Config\Loader\LoaderInterface');
