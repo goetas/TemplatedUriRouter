@@ -103,7 +103,7 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
             'strict_requirements' => null,
         ));
 
-        $this->assertEquals('/foo/foobar/?{&bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
+        $this->assertEquals('/foo/foobar/{?bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
     }
 
     private function getServiceContainer(RouteCollection $routes)
