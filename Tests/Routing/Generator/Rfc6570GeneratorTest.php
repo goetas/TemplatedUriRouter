@@ -53,6 +53,25 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testPlaceholderInStrictParameter()
+    {
+        $routes = new RouteCollection();
+
+        $routes->add('foo', new Route(
+            '/foo/{foo}/',
+            array(
+                'foo' => '123',
+            ),
+            array(
+                'foo' => '\d+',
+            )
+        ));
+
+        $generator = new Rfc6570Generator($routes, new RequestContext());
+
+        $this->assertEquals('/foo/{placeholder}/{?bar}', $generator->generate('foo', array('foo' => '{placeholder}', 'bar' => 'barbar')));
+    }
+
     /**
      * @expectedException \Symfony\Component\Routing\Exception\InvalidParameterException
      */
