@@ -31,11 +31,10 @@
         "symfony/routing": "2.4.1"
     },
     "autoload": {
-        "psr-0": {
-            "Hautelook\\TemplatedUriRouter": ""
+        "psr-4": {
+            "Hautelook\\TemplatedUriRouter\\": ""
         }
     },
-    "target-dir": "Hautelook/TemplatedUriRouter",
     "extra": {
         "branch-alias": {
             "dev-master": "2.0-dev"
