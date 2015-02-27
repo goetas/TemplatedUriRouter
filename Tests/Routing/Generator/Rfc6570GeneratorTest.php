@@ -11,7 +11,8 @@
 
 namespace Hautelook\TemplatedUriRouter\Tests\Routing\Generator;
 
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Hautelook\TemplatedUriRouter\Routing\Generator\Rfc6570Generator;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -36,11 +37,7 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
             )
         ));
 
-        $container = $this->getServiceContainer($routes);
-
-        $router = new Router($container, 'foo', array(
-            'generator_class' => 'Hautelook\\TemplatedUriRouter\\Routing\\Generator\\Rfc6570Generator',
-        ));
+        $router = new Rfc6570Generator($routes, new RequestContext());
 
         $this->assertEquals($expected, $router->generate('foo', $parameters));
     }
@@ -73,11 +70,7 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
             )
         ));
 
-        $container = $this->getServiceContainer($routes);
-
-        $router = new Router($container, 'foo', array(
-            'generator_class' => 'Hautelook\\TemplatedUriRouter\\Routing\\Generator\\Rfc6570Generator',
-        ));
+        $router = new Rfc6570Generator($routes, new RequestContext());
 
         $this->assertEquals('/foo/foobar/?{&bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
     }
@@ -96,30 +89,9 @@ class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
             )
         ));
 
-        $container = $this->getServiceContainer($routes);
-
-        $router = new Router($container, 'foo', array(
-            'generator_class' => 'Hautelook\\TemplatedUriRouter\\Routing\\Generator\\Rfc6570Generator',
-            'strict_requirements' => null,
-        ));
+        $router = new Rfc6570Generator($routes, new RequestContext());
+        $router->setStrictRequirements(null);
 
         $this->assertEquals('/foo/foobar/{?bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
-    }
-
-    private function getServiceContainer(RouteCollection $routes)
-    {
-        $loader = $this->getMock('Symfony\Component\Config\Loader\LoaderInterface');
-        $loader->expects($this->any())
-            ->method('load')
-            ->will($this->returnValue($routes))
-        ;
-
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
-        $container->expects($this->once())
-            ->method('get')
-            ->will($this->returnValue($loader))
-        ;
-
-        return $container;
     }
 }
