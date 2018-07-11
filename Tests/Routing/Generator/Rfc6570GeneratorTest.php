@@ -15,11 +15,12 @@ use Hautelook\TemplatedUriRouter\Routing\Generator\Rfc6570Generator;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author Baldur Rensch <baldur.rensch@hautelook.com>
  */
-class Rfc6570GeneratorTest extends \PHPUnit_Framework_TestCase
+class Rfc6570GeneratorTest extends TestCase
 {
     /**
      * @dataProvider getTestPlaceholderData
