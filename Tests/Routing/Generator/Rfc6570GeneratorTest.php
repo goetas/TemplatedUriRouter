@@ -49,7 +49,7 @@ class Rfc6570GeneratorTest extends TestCase
             array('/foo/foobar/{?bar}', array('foo' => 'foobar', 'bar' => 'barbar')),
             array('/foo/foobar/{?bar,paramTwo}', array('foo' => 'foobar', 'bar' => 'barbar', 'paramTwo'=>'paramTwo')),
             array('/foo/foobar/{?bar%3Aencoded}', array('foo' => 'foobar', 'bar:encoded' => 'barbar')),
-            array('/foo/foobar/{?bar%5B%5D*}', array('foo' => 'foobar', 'bar' => array())),
+            array('/foo/foobar/{?bar*}', array('foo' => 'foobar', 'bar' => array())),
             array('/foo/{placeholder}/{?bar}', array('foo' => '{placeholder}', 'bar' => 'barbar')),
         );
     }
