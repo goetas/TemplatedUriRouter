@@ -13,7 +13,7 @@ Run the following command (assuming you have composer.phar or composer binary in
 require `hautelook/templated-uri-router` to your `composer.json` and run `composer install`:
 
 ```bash
-$ composer require "hautelook/templated-uri-router ~1.0"
+$ composer require hautelook/templated-uri-router
 ```
 
 ## Usage
