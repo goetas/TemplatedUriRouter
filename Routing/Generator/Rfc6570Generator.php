@@ -160,7 +160,7 @@ class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, Co
                 if (is_scalar($value)) {
                     $parts[] = urlencode($key);
                 } elseif (is_array($value)) {
-                    $parts[] = urlencode($key) . '%5B%5D*';
+                    $parts[] = urlencode($key) . '*';
                 }
             }
             $url .= '{?' . implode(',', $parts) . '}';
