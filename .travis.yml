@@ -12,7 +12,9 @@ matrix:
       dist: precise
     - php: 5.4
       env: COMPOSER_FLAGS="--prefer-lowest"
+      dist: precise
     - php: 5.5
+      dist: precise
     - php: 5.6
       env: SYMFONY_LTS=v3 DEPENDENCIES=dev COMPOSER_FLAGS="--prefer-stable"
     - php: 7.0
@@ -20,8 +22,6 @@ matrix:
     - php: 7.1
     - php: 7.2
       env: DEPENDENCIES=dev
-    - php: hhvm
-      env: SYMFONY_LTS=v3
 
 before_install:
   - if [ "$SYMFONY_LTS" != "" ]; then composer require --dev --no-update symfony/lts=$SYMFONY_LTS; fi
