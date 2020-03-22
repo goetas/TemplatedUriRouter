@@ -55,10 +55,11 @@ class Rfc6570GeneratorTest extends TestCase
         $this->assertEquals('/foo/{placeholder}/{?bar}', $generator->generate('foo', array('foo' => '{placeholder}', 'bar' => 'barbar')));
     }
 
+    /**
+     * @expectedException \Symfony\Component\Routing\Exception\InvalidParameterException
+     */
     public function testStrictParameters()
     {
-        $this->expectException('\Symfony\Component\Routing\Exception\InvalidParameterException');
-
         $routes = $this->getRoutes(true);
 
         $router = new Rfc6570Generator($routes, new RequestContext());
