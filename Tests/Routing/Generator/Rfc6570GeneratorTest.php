@@ -94,7 +94,7 @@ class Rfc6570GeneratorTest extends TestCase
                 array(
                     'foo' => '123',
                 ),
-                array($regexp)
+                $isParamRequired ? array('foo' => $regexp) : array()
             ));
         } else {
             $routes = array(
