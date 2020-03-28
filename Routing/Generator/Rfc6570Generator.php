@@ -13,7 +13,6 @@ namespace Hautelook\TemplatedUriRouter\Routing\Generator;
 
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
-use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Generator\ConfigurableRequirementsInterface;
 
@@ -26,7 +25,7 @@ use Symfony\Component\Routing\Generator\ConfigurableRequirementsInterface;
  *
  * @api
  */
-class Rfc6570Generator extends UrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInterface
+class Rfc6570Generator extends BcUrlGenerator implements UrlGeneratorInterface, ConfigurableRequirementsInterface
 {
     /**
      * @throws MissingMandatoryParametersException When some parameters are missing that mandatory for the route

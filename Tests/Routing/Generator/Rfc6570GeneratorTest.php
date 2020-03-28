@@ -12,6 +12,7 @@
 namespace Hautelook\TemplatedUriRouter\Tests\Routing\Generator;
 
 use Hautelook\TemplatedUriRouter\Routing\Generator\Rfc6570Generator;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -27,16 +28,7 @@ class Rfc6570GeneratorTest extends TestCase
      */
     public function testPlaceholder($expected, $parameters)
     {
-        $routes = new RouteCollection();
-
-        $routes->add('foo', new Route(
-            '/foo/{foo}/',
-            array(
-                'foo'    => '123',
-            ),
-            array(
-            )
-        ));
+        $routes = $this->getRoutes(false);
 
         $router = new Rfc6570Generator($routes, new RequestContext());
 
@@ -56,17 +48,7 @@ class Rfc6570GeneratorTest extends TestCase
 
     public function testPlaceholderInStrictParameter()
     {
-        $routes = new RouteCollection();
-
-        $routes->add('foo', new Route(
-            '/foo/{foo}/',
-            array(
-                'foo' => '123',
-            ),
-            array(
-                'foo' => '\d+',
-            )
-        ));
+        $routes = $this->getRoutes(true);
 
         $generator = new Rfc6570Generator($routes, new RequestContext());
 
@@ -78,17 +60,7 @@ class Rfc6570GeneratorTest extends TestCase
      */
     public function testStrictParameters()
     {
-        $routes = new RouteCollection();
-
-        $routes->add('foo', new Route(
-            '/foo/{foo}/',
-            array(
-                'foo' => '123',
-            ),
-            array(
-                'foo' => '\d+',
-            )
-        ));
+        $routes = $this->getRoutes(true);
 
         $router = new Rfc6570Generator($routes, new RequestContext());
 
@@ -97,21 +69,50 @@ class Rfc6570GeneratorTest extends TestCase
 
     public function testLooseParameters()
     {
-        $routes = new RouteCollection();
-
-        $routes->add('foo', new Route(
-            '/foo/{foo}/',
-            array(
-                'foo' => '123',
-            ),
-            array(
-                'foo' => '\d+',
-            )
-        ));
+        $routes = $this->getRoutes(true);
 
         $router = new Rfc6570Generator($routes, new RequestContext());
         $router->setStrictRequirements(null);
 
         $this->assertEquals('/foo/foobar/{?bar}', $router->generate('foo', array('foo' => 'foobar', 'bar' => 'barbar')));
+    }
+
+    /**
+     * @param bool $isParamRequired
+     *
+     * @return \Symfony\Component\Routing\RouteCollection
+     */
+    protected function getRoutes($isParamRequired = true)
+    {
+        $regexp = $isParamRequired ? '\d+' : '.*';
+
+        if (Kernel::MAJOR_VERSION < 5) {
+            $routes = new RouteCollection();
+
+            $routes->add('foo', new Route(
+                '/foo/{foo}/',
+                array(
+                    'foo' => '123',
+                ),
+                $isParamRequired ? array('foo' => $regexp) : array()
+            ));
+        } else {
+            $routes = array(
+                'foo' => array(
+                    array('foo'),
+                    array('foo' => '123'),
+                    array(array('text', '/foo/{foo}/')),
+                    array(
+                        array('text', '/'),
+                        array('variable', '/', $regexp, 'foo', true),
+                        array('text', '/foo'),
+                    ),
+                    array(),
+                    array(),
+                ),
+            );
+        }
+
+        return $routes;
     }
 }
