@@ -1,11 +1,16 @@
 Hautelook Templated URI Router
 ==============================
 
-Symfony2 UrlGenerator that provides a [RFC-6570][RFC-6570] compatible router and URL Generator.
-Currently it is extremely naive, and incomplete.
-However, it does what we need it to do. Contributions are welcome.
+Symfony URL generator that provides an [RFC-6570](https://tools.ietf.org/html/rfc6570)-compatible router.
+
+Currently, it is extremely naive and incomplete. However, it does what we need it to do. Contributions are welcome.
 
 [![Build Status](https://secure.travis-ci.org/hautelook/TemplatedUriRouter.png?branch=master)](https://travis-ci.org/hautelook/TemplatedUriRouter)
+
+## Requirements
+
+- PHP 8.0.2 or greater
+- Symfony Routing component 6.0 or greater
 
 ## Installation
 
@@ -43,8 +48,7 @@ This will produce a link similar to:
 
 ## Bundle
 
-The symfony2 bundle lives at
+The Symfony bundle lives at
 [https://github.com/hautelook/TemplatedUriBundle](https://github.com/hautelook/TemplatedUriBundle).
 
 [RFC-6570]: https://tools.ietf.org/html/rfc6570
-
