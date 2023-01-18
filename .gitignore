@@ -6,4 +6,4 @@ vendor/*
 .idea
 
 # PHPUnit
-.phpunit*
+.phpunit.result.cache

@@ -2,7 +2,7 @@
     "name": "hautelook/templated-uri-router",
     "description": "Symfony URL generator that provides an RFC-6570-compatible router.",
     "keywords": [
-        "Symfony6",
+        "Symfony",
         "URI",
         "URL",
         "RFC 6570",

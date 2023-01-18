@@ -7,11 +7,6 @@ Currently, it is extremely naive and incomplete. However, it does what we need i
 
 [![Build Status](https://secure.travis-ci.org/hautelook/TemplatedUriRouter.png?branch=master)](https://travis-ci.org/hautelook/TemplatedUriRouter)
 
-## Requirements
-
-- PHP 8.0.2 or greater
-- Symfony Routing component 6.0 or greater
-
 ## Installation
 
 Run the following command (assuming you have composer.phar or composer binary installed), or
